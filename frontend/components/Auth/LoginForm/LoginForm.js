@@ -5,7 +5,8 @@ import { toast } from 'react-toastify';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 
-import { loginUser } from '../../../api/user';
+import { loginUser, resetPasswordUser } from '../../../api/user';
+import useAuth from '../../../hooks/useAuth';
 
 const INITIAL_VALUES = {
   identifier: '',
@@ -19,6 +20,7 @@ const VALIDATION_SCHEMA = {
 
 const LoginForm = ({ showRegisterForm, onCloseModal }) => {
   const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
 
   const formik = useFormik({
     initialValues: INITIAL_VALUES,
@@ -34,11 +36,26 @@ const LoginForm = ({ showRegisterForm, onCloseModal }) => {
         );
       }
 
+      // Colocando el token en el context global
+      login(data.jwt);
+
       setLoading(false);
       toast.success('Ha iniciado sesión exitosamente.');
       onCloseModal();
     },
   });
+
+  const handleResetPassword = () => {
+    formik.setErrors({}); // Limpiando los errores
+    const validateEmail = yup.string().email().required();
+
+    if (!validateEmail.isValidSync(formik.values.identifier))
+      return formik.setErrors({
+        identifier: true,
+      });
+
+    resetPasswordUser(formik.values.identifier);
+  };
 
   return (
     <Form onSubmit={formik.handleSubmit} className="login-form">
@@ -64,7 +81,9 @@ const LoginForm = ({ showRegisterForm, onCloseModal }) => {
         </Button>
 
         <div>
-          <Button type="button">Recuperar contraseña</Button>
+          <Button onClick={handleResetPassword} type="button">
+            Recuperar contraseña
+          </Button>
 
           <Button
             loading={loading}

@@ -2,17 +2,7 @@ import Link from 'next/link';
 
 import { Container, Grid, Image, Input } from 'semantic-ui-react';
 
-const Logo = () => (
-  <Link href="/">
-    <a>
-      <Image src="/logo.png" alt="Logo" />
-    </a>
-  </Link>
-);
-
-const Search = () => <Input id="search-game" icon={{ name: 'search' }} />;
-
-const TopBar = () => {
+export default function TopBar() {
   return (
     <div className="top-bar">
       <Container>
@@ -28,6 +18,18 @@ const TopBar = () => {
       </Container>
     </div>
   );
-};
+}
 
-export default TopBar;
+function Logo() {
+  return (
+    <Link href="/">
+      <a>
+        <Image src="/logo.png" alt="Logo" />
+      </a>
+    </Link>
+  );
+}
+
+function Search() {
+  return <Input id="search-game" icon={{ name: 'search' }} />;
+}

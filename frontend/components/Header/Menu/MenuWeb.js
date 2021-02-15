@@ -1,38 +1,36 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 import { Container, Menu, Grid, Icon } from 'semantic-ui-react';
 
-import BasicModal from '../../Modal/BasicModal';
+import { getMe } from '../../../api/user';
 import Auth from '../../Auth';
+import BasicModal from '../../Modal/BasicModal';
+import useAuth from '../../../hooks/useAuth';
 
-const MenuPlatforms = () => (
-  <Menu>
-    <Link href="/nintendo">
-      {/* as permite indicar como debe comportarse el componente */}
-      <Menu.Item as="a">Nintendo</Menu.Item>
-    </Link>
-    <Link href="/pc">
-      <Menu.Item as="a">PC</Menu.Item>
-    </Link>
-    <Link href="/xbox">
-      <Menu.Item as="a">Xbox</Menu.Item>
-    </Link>
-  </Menu>
-);
-
-const MenuUser = ({ onShowModal }) => (
-  <Menu>
-    <Menu.Item onClick={onShowModal}>
-      <Icon name="user outline" />
-      Mi cuenta
-    </Menu.Item>
-  </Menu>
-);
-
-const MenuWeb = () => {
+export default function MenuWeb() {
   const [showModal, setShowModal] = useState(false);
   const [titleModal, setTitleModal] = useState('Iniciar sesión');
+  const [user, setUser] = useState(undefined);
+  const { auth, logout } = useAuth();
+
+  // Creando una función autoinvocada para hacer del useEffect asíncrono
+  useEffect(() => {
+    let isCancelled = false;
+    const getData = async () => {
+      const data = await getMe(logout);
+      if (!isCancelled) {
+        setUser(data);
+      }
+    };
+    getData();
+    return () => (isCancelled = true);
+    // (async () => {
+    //   const data = await getMe(logout);
+    //   console.log(data);
+    //   setUser(data);
+    // })();
+  }, [auth]);
 
   const onShowModal = () => setShowModal(true);
   const onCloseModal = () => setShowModal(false);
@@ -46,7 +44,7 @@ const MenuWeb = () => {
           </Grid.Column>
 
           <Grid.Column width={10} className="menu__right">
-            <MenuUser onShowModal={onShowModal} />
+            <MenuUser user={user} logout={logout} onShowModal={onShowModal} />
           </Grid.Column>
         </Grid>
       </Container>
@@ -61,6 +59,69 @@ const MenuWeb = () => {
       </BasicModal>
     </div>
   );
-};
+}
 
-export default MenuWeb;
+function MenuPlatforms() {
+  return (
+    <Menu>
+      <Link href="/nintendo">
+        {/* as permite indicar como debe comportarse el componente */}
+        <Menu.Item as="a">Nintendo</Menu.Item>
+      </Link>
+
+      <Link href="/pc">
+        <Menu.Item as="a">PC</Menu.Item>
+      </Link>
+
+      <Link href="/xbox">
+        <Menu.Item as="a">Xbox</Menu.Item>
+      </Link>
+    </Menu>
+  );
+}
+
+function MenuUser({ user, logout, onShowModal }) {
+  return (
+    <Menu>
+      {user ? (
+        <>
+          <Link href="/orders">
+            <Menu.Item as="a">
+              <Icon name="game" />
+              Mis pedidos
+            </Menu.Item>
+          </Link>
+
+          <Link href="/wishlist">
+            <Menu.Item as="a">
+              <Icon name="heart" />
+              Favoritos
+            </Menu.Item>
+          </Link>
+
+          <Link href="/account">
+            <Menu.Item as="a">
+              <Icon name="user" />
+              {user.name} {user.lastname}
+            </Menu.Item>
+          </Link>
+
+          <Link href="/cart">
+            <Menu.Item as="a" className="m-0">
+              <Icon name="cart" />
+            </Menu.Item>
+          </Link>
+
+          <Menu.Item onClick={logout} className="m-0">
+            <Icon name="power off" />
+          </Menu.Item>
+        </>
+      ) : (
+        <Menu.Item onClick={onShowModal}>
+          <Icon name="user outline" />
+          Mi cuenta
+        </Menu.Item>
+      )}
+    </Menu>
+  );
+}

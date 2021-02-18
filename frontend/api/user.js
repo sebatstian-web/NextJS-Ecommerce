@@ -94,3 +94,43 @@ export const updateUser = async (idUser, formData, logout) => {
     return null;
   }
 };
+
+export const updateUserEmail = async (idUser, email, logout) => {
+  try {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${idUser}`;
+    const params = {
+      method: 'PUT',
+      body: JSON.stringify({ email }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+
+    const data = await authFetch(url, params, logout);
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
+export const updateUserPassword = async (idUser, password, logout) => {
+  try {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${idUser}`;
+    const params = {
+      method: 'PUT',
+      body: JSON.stringify({ password }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+
+    const data = await authFetch(url, params, logout);
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};

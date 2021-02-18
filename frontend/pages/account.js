@@ -3,8 +3,10 @@ import { useRouter } from 'next/router';
 
 import { getMe } from '../api/user';
 import BasicLayout from '../layouts/BasicLayout';
-import useAuth from '../hooks/useAuth';
+import ChangeEmailForm from '../components/Account/ChangeEmailForm';
 import ChangeNameForm from '../components/Account/ChangeNameForm';
+import ChangePasswordForm from '../components/Account/ChangePasswordForm';
+import useAuth from '../hooks/useAuth';
 
 export default function Account() {
   const [user, setUser] = useState(undefined);
@@ -57,6 +59,14 @@ function Configuration({ user, logout, setReloadUser }) {
           logout={logout}
           setReloadUser={setReloadUser}
         />
+
+        <ChangeEmailForm
+          user={user}
+          logout={logout}
+          setReloadUser={setReloadUser}
+        />
+
+        <ChangePasswordForm user={user} logout={logout} />
       </div>
     </div>
   );

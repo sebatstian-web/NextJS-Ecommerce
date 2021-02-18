@@ -1,11 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
+import { Icon } from 'semantic-ui-react';
+
 import { getMe } from '../api/user';
+import AddressForm from '../components/Account/AddressForm';
 import BasicLayout from '../layouts/BasicLayout';
+import BasicModal from '../components/Modal/BasicModal';
 import ChangeEmailForm from '../components/Account/ChangeEmailForm';
 import ChangeNameForm from '../components/Account/ChangeNameForm';
 import ChangePasswordForm from '../components/Account/ChangePasswordForm';
+import ListsAddress from '../components/Account/ListsAddress';
 import useAuth from '../hooks/useAuth';
 
 export default function Account() {
@@ -45,6 +50,7 @@ export default function Account() {
         logout={logout}
         setReloadUser={setReloadUser}
       />
+      <Addresses />
     </BasicLayout>
   );
 }
@@ -68,6 +74,38 @@ function Configuration({ user, logout, setReloadUser }) {
 
         <ChangePasswordForm user={user} logout={logout} />
       </div>
+    </div>
+  );
+}
+
+function Addresses() {
+  const [showModal, setShowModal] = useState(false);
+  const [title, setTitle] = useState('');
+  const [formModal, setFormModal] = useState(null);
+
+  const openModal = (title) => {
+    setTitle(title);
+    setShowModal(true);
+    setFormModal(<AddressForm setShowModal={setShowModal} />);
+  };
+
+  return (
+    <div className="account__addresses">
+      <div className="title">
+        Direcciones
+        <Icon
+          onClick={() => openModal('Agregar nueva dirección')}
+          name="plus"
+          link
+        />
+      </div>
+      <div className="data">
+        <ListsAddress />
+      </div>
+
+      <BasicModal show={showModal} setShow={setShowModal} title={title}>
+        {formModal}
+      </BasicModal>
     </div>
   );
 }

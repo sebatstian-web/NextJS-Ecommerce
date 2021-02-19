@@ -28,7 +28,7 @@ const VALIDATION_SCHEMA = {
   phone: yup.string().trim().required(true),
 };
 
-export default function AddressForm({ setShowModal }) {
+export default function AddressForm({ setShowModal, setReloadAddress }) {
   const [loading, setLoading] = useState(false);
   const { auth, logout } = useAuth();
 
@@ -57,6 +57,7 @@ export default function AddressForm({ setShowModal }) {
     formik.resetForm();
     setLoading(false);
     setShowModal(false);
+    setReloadAddress(true); // Para recargar las direcciones sin hacer refresh
     toast.success('Se guardo exitosamente la nueva dirección.');
   };
 

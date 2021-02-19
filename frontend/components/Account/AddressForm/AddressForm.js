@@ -5,18 +5,18 @@ import { useFormik } from 'formik';
 import { toast } from 'react-toastify';
 import * as yup from 'yup';
 
-import { createAddressApi } from '../../../api/address';
+import { createAddressApi, updateAddressApi } from '../../../api/address';
 import useAuth from '../../../hooks/useAuth';
 
-const INITIAL_VALUES = {
-  title: '',
-  name: '',
-  address: '',
-  city: '',
-  state: '',
-  postalCode: '',
-  phone: '',
-};
+const INITIAL_VALUES = (address) => ({
+  title: address?.title || '',
+  name: address?.name || '',
+  address: address?.address || '',
+  city: address?.city || '',
+  state: address?.state || '',
+  postalCode: address?.postalCode || '',
+  phone: address?.phone || '',
+});
 
 const VALIDATION_SCHEMA = {
   title: yup.string().trim().required(true),
@@ -28,15 +28,20 @@ const VALIDATION_SCHEMA = {
   phone: yup.string().trim().required(true),
 };
 
-export default function AddressForm({ setShowModal, setReloadAddress }) {
+export default function AddressForm({
+  setShowModal,
+  setReloadAddress,
+  newAddress,
+  address,
+}) {
   const [loading, setLoading] = useState(false);
   const { auth, logout } = useAuth();
 
   const formik = useFormik({
-    initialValues: INITIAL_VALUES,
+    initialValues: INITIAL_VALUES(address),
     validationSchema: yup.object(VALIDATION_SCHEMA),
     onSubmit: (formData) => {
-      createAddress(formData);
+      newAddress ? createAddress(formData) : updateAddress(formData);
     },
   });
 
@@ -59,6 +64,27 @@ export default function AddressForm({ setShowModal, setReloadAddress }) {
     setShowModal(false);
     setReloadAddress(true); // Para recargar las direcciones sin hacer refresh
     toast.success('Se guardo exitosamente la nueva dirección.');
+  };
+
+  const updateAddress = async (formData) => {
+    setLoading(true);
+    const formDataTemp = {
+      ...formData,
+      user: auth.idUser,
+    };
+
+    const data = await updateAddressApi(address.id, formDataTemp, logout);
+
+    if (!data) {
+      setLoading(false);
+      return toast.error('Error al actualizar la dirección.');
+    }
+
+    formik.resetForm();
+    setLoading(false);
+    setShowModal(false);
+    setReloadAddress(true);
+    toast.success('Se actualizó exitosamente la dirección.');
   };
 
   return (
@@ -140,7 +166,7 @@ export default function AddressForm({ setShowModal, setReloadAddress }) {
             type="submit"
             className="submit"
           >
-            Guardar
+            {newAddress ? 'Crear' : 'Actualizar'}
           </Button>
         </div>
       </Form>

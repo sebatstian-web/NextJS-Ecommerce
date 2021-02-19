@@ -20,19 +20,16 @@ export default function Account() {
 
   useEffect(() => {
     let isCancelled = false;
+
     const getData = async () => {
       const data = await getMe(logout);
       if (!isCancelled) {
         setUser(data || null);
       }
     };
+
     getData();
     return () => (isCancelled = true);
-    // (async () => {
-    //   const data = await getMe(logout);
-    //   console.log(data);
-    //   setUser(data || null);
-    // })();
   }, [auth]);
 
   if (user === undefined) return null;
@@ -84,13 +81,15 @@ function Addresses() {
   const [formModal, setFormModal] = useState(null);
   const [reloadAddress, setReloadAddress] = useState(false);
 
-  const openModal = (title) => {
+  const openModal = (title, address) => {
     setTitle(title);
     setShowModal(true);
     setFormModal(
       <AddressForm
         setShowModal={setShowModal}
         setReloadAddress={setReloadAddress}
+        newAddress={address ? false : true}
+        address={address || null}
       />
     );
   };
@@ -105,10 +104,12 @@ function Addresses() {
           link
         />
       </div>
+
       <div className="data">
         <ListsAddress
           reloadAddress={reloadAddress}
           setReloadAddress={setReloadAddress}
+          openModal={openModal}
         />
       </div>
 

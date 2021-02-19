@@ -3,10 +3,14 @@ import { useState, useEffect } from 'react';
 import { map, size } from 'lodash';
 import { Grid, Button } from 'semantic-ui-react';
 
-import { getAddressApi } from '../../../api/address';
+import { getAddressApi, deleteAddressApi } from '../../../api/address';
 import useAuth from '../../../hooks/useAuth';
 
-export default function ListsAddress({ reloadAddress, setReloadAddress }) {
+export default function ListsAddress({
+  reloadAddress,
+  setReloadAddress,
+  openModal,
+}) {
   const [addresses, setAddresses] = useState(null);
   const { auth, logout } = useAuth();
 
@@ -27,7 +31,12 @@ export default function ListsAddress({ reloadAddress, setReloadAddress }) {
         <Grid>
           {map(addresses, (address) => (
             <Grid.Column key={address.id} mobile={16} tablet={8} computer={4}>
-              <Address address={address} />
+              <Address
+                address={address}
+                setReloadAddress={setReloadAddress}
+                logout={logout}
+                openModal={openModal}
+              />
             </Grid.Column>
           ))}
         </Grid>
@@ -38,7 +47,17 @@ export default function ListsAddress({ reloadAddress, setReloadAddress }) {
   );
 }
 
-function Address({ address }) {
+function Address({ address, setReloadAddress, logout, openModal }) {
+  const [loading, setLoading] = useState(false);
+  const { id, title } = address;
+
+  const deleteAddress = async () => {
+    setLoading(true);
+    const resp = await deleteAddressApi(id, logout);
+    if (resp) setReloadAddress(true); // Recargar nuevamente la lista
+    setLoading(false);
+  };
+
   return (
     <div className="address">
       <p>{address.title}</p>
@@ -51,8 +70,13 @@ function Address({ address }) {
       <p>{address.phone}</p>
 
       <div className="actions">
-        <Button primary>Editar</Button>
-        <Button>Eliminar</Button>
+        <Button onClick={() => openModal(`Editar: ${title}`, address)} primary>
+          Editar
+        </Button>
+
+        <Button onClick={deleteAddress} loading={loading} disabled={loading}>
+          Eliminar
+        </Button>
       </div>
     </div>
   );

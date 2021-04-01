@@ -17,8 +17,6 @@ export default function Home() {
     })();
   }, []);
 
-  console.log(games);
-
   return (
     <BasicLayout className="home">
       {!games && <Loader active>Cargando juegos...</Loader>}

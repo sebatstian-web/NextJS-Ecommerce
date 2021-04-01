@@ -8,6 +8,8 @@ import { setStorageToken, getStorageToken, removeToken } from '../api/token';
 import AuthContext from '../context/AuthContext';
 
 import 'react-toastify/dist/ReactToastify.css';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 import '../styles/global.scss';
 import 'semantic-ui-css/semantic.min.css';
 

@@ -36,3 +36,16 @@ export const getTotalGamesPlatformApi = async (platform) => {
     return null;
   }
 };
+
+export const getGameByUrlApi = async (path) => {
+  try {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/games?url=${path}`;
+    const resp = await fetch(url);
+    const data = await resp.json();
+
+    return data[0]; // Devolviendo el primer elemento
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};

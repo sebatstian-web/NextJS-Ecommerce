@@ -9,7 +9,7 @@ export const getProductsCart = () => {
     const products = cart.split(',');
     return products;
   } else {
-    return [];
+    return null;
   }
 };
 
@@ -31,5 +31,15 @@ export const addProductCart = (product) => {
     // Si no hay productos
     localStorage.setItem(CART, product);
     toast.success('Producto agregado al carrito');
+  }
+};
+
+export const countProductsCart = () => {
+  const cart = getProductsCart();
+
+  if (cart) {
+    return cart.length;
+  } else {
+    return 0;
   }
 };

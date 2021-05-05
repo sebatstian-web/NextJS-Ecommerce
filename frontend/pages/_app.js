@@ -5,7 +5,11 @@ import { ToastContainer, toast } from 'react-toastify';
 import jwt_decode from 'jwt-decode';
 
 import { setStorageToken, getStorageToken, removeToken } from '../api/token';
-import { getProductsCart, addProductCart } from '../api/cart';
+import {
+  getProductsCart,
+  addProductCart,
+  countProductsCart,
+} from '../api/cart';
 import AuthContext from '../context/AuthContext';
 import CartContext from '../context/CartContext';
 
@@ -16,9 +20,11 @@ import '../styles/global.scss';
 import 'semantic-ui-css/semantic.min.css';
 
 export default function MyApp({ Component, pageProps }) {
+  const router = useRouter();
   const [auth, setAuth] = useState(undefined);
   const [reloadUser, setReloadUser] = useState(false);
-  const router = useRouter();
+  const [totalProductsCart, setTotalProductsCart] = useState(0);
+  const [reloadCard, setReloadCard] = useState(false);
 
   useEffect(() => {
     const token = getStorageToken();
@@ -36,6 +42,11 @@ export default function MyApp({ Component, pageProps }) {
 
     setReloadUser(false);
   }, [reloadUser]);
+
+  useEffect(() => {
+    setTotalProductsCart(countProductsCart);
+    setReloadCard(false);
+  }, [reloadCard, auth]);
 
   const login = (token) => {
     const { id } = jwt_decode(token);
@@ -71,6 +82,7 @@ export default function MyApp({ Component, pageProps }) {
 
     if (token) {
       addProductCart(productId);
+      setReloadCard(true);
     } else {
       toast.warning('Para comprar debe iniciar sesión');
     }
@@ -78,13 +90,13 @@ export default function MyApp({ Component, pageProps }) {
 
   const cartData = useMemo(
     () => ({
-      productsCart: 0,
+      productsCart: totalProductsCart,
       addProductCart: addProduct,
       getProductsCart,
       removeProductCart: () => null,
       removeAllProductsCart: () => null,
     }),
-    []
+    [totalProductsCart]
   );
 
   // Aun no se ha comprobado si el usuario esta logueado

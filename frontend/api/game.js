@@ -49,3 +49,16 @@ export const getGameByUrlApi = async (path) => {
     return null;
   }
 };
+
+export async function searchGamesApi(query) {
+  try {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/games?_q=${query}`;
+    const resp = await fetch(url);
+    const data = await resp.json();
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}

@@ -1,11 +1,13 @@
 import { useMemo, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import jwt_decode from 'jwt-decode';
 
 import { setStorageToken, getStorageToken, removeToken } from '../api/token';
+import { getProductsCart, addProductCart } from '../api/cart';
 import AuthContext from '../context/AuthContext';
+import CartContext from '../context/CartContext';
 
 import 'react-toastify/dist/ReactToastify.css';
 import 'slick-carousel/slick/slick.css';
@@ -64,22 +66,45 @@ export default function MyApp({ Component, pageProps }) {
     [auth]
   );
 
+  const addProduct = (productId) => {
+    const token = getStorageToken();
+
+    if (token) {
+      addProductCart(productId);
+    } else {
+      toast.warning('Para comprar debe iniciar sesión');
+    }
+  };
+
+  const cartData = useMemo(
+    () => ({
+      productsCart: 0,
+      addProductCart: addProduct,
+      getProductsCart,
+      removeProductCart: () => null,
+      removeAllProductsCart: () => null,
+    }),
+    []
+  );
+
   // Aun no se ha comprobado si el usuario esta logueado
   if (auth === undefined) return null;
 
   return (
     <AuthContext.Provider value={authData}>
-      <Component {...pageProps} />
+      <CartContext.Provider value={cartData}>
+        <Component {...pageProps} />
 
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        rtl={false}
-        pauseOnFocusLoss={false}
-        newestOnTop
-        closeOnClick
-        pauseOnHover
-      />
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          rtl={false}
+          pauseOnFocusLoss={false}
+          newestOnTop
+          closeOnClick
+          pauseOnHover
+        />
+      </CartContext.Provider>
     </AuthContext.Provider>
   );
 }

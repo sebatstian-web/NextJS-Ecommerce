@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Link from 'next/link';
 
 import { Container, Grid, Image, Input } from 'semantic-ui-react';
@@ -31,5 +33,24 @@ function Logo() {
 }
 
 function Search() {
-  return <Input id="search-game" icon={{ name: 'search' }} />;
+  const router = useRouter();
+  const [searchStr, setSearchStr] = useState('');
+  const [load, setLoad] = useState(false);
+
+  useEffect(() => {
+    // Solo cargará el componente una vez que este renderizado
+    if (load) {
+      router.push(`/search?query=${searchStr}`);
+    }
+    setLoad(true);
+  }, [searchStr]);
+
+  return (
+    <Input
+      onChange={(_, data) => setSearchStr(data.value)}
+      value={router.query.query || searchStr} // Router para mantener la referencia del primer valor escrito
+      id="search-game"
+      icon={{ name: 'search' }}
+    />
+  );
 }

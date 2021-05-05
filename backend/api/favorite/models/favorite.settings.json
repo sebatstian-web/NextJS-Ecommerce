@@ -2,12 +2,13 @@
   "kind": "collectionType",
   "collectionName": "favorites",
   "info": {
-    "name": "favorite"
+    "name": "favorite",
+    "description": ""
   },
   "options": {
     "increments": true,
     "timestamps": true,
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "attributes": {
     "user": {

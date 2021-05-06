@@ -7,7 +7,7 @@ import BasicLayout from '../layouts/BasicLayout';
 import useAuth from '../hooks/useAuth';
 import ListGames from '../components/ListGames';
 
-export default function wishlist() {
+export default function Wishlist() {
   const { auth, logout } = useAuth();
   const [games, setGames] = useState(null);
 

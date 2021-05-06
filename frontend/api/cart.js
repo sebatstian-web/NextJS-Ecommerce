@@ -43,3 +43,12 @@ export const countProductsCart = () => {
     return 0;
   }
 };
+
+export const removeProductCart = (product) => {
+  const cart = getProductsCart();
+
+  if (cart) {
+    const productsFilter = cart.filter((item) => item !== product);
+    localStorage.setItem(CART, productsFilter);
+  }
+};

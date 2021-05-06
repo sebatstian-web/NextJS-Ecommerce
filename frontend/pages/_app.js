@@ -9,6 +9,7 @@ import {
   getProductsCart,
   addProductCart,
   countProductsCart,
+  removeProductCart,
 } from '../api/cart';
 import AuthContext from '../context/AuthContext';
 import CartContext from '../context/CartContext';
@@ -88,12 +89,17 @@ export default function MyApp({ Component, pageProps }) {
     }
   };
 
+  const removeProduct = (product) => {
+    removeProductCart(product);
+    setReloadCard(true);
+  };
+
   const cartData = useMemo(
     () => ({
       productsCart: totalProductsCart,
       addProductCart: addProduct,
       getProductsCart,
-      removeProductCart: () => null,
+      removeProductCart: removeProduct,
       removeAllProductsCart: () => null,
     }),
     [totalProductsCart]

@@ -12,7 +12,7 @@ export default function Home() {
   useEffect(() => {
     (async () => {
       const data = await getLastGamesApi(15);
-      if (!data.length) return setGames([]);
+      if (!data?.length) return setGames([]);
       setGames(data);
     })();
   }, []);

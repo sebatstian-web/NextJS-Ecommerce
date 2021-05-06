@@ -7,7 +7,7 @@ import { searchGamesApi } from '../api/game';
 import BasicLayout from '../layouts/BasicLayout';
 import ListGames from '../components/ListGames';
 
-export default function search() {
+export default function Search() {
   const { query } = useRouter();
   const [games, setGames] = useState(null);
 

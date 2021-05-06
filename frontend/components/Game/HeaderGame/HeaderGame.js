@@ -31,7 +31,7 @@ function InfoGame({ game }) {
   const { addProductCart } = useCart();
   const [isFavorite, setIsFavorite] = useState(false);
   const [reloadFavorite, setReloadFavorite] = useState(false);
-  const { title, summary, price, discount, id } = game;
+  const { title, summary, price, discount, id, url } = game;
 
   useEffect(() => {
     (async () => {
@@ -80,7 +80,7 @@ function InfoGame({ game }) {
           </div>
         </div>
         <Button
-          onClick={() => addProductCart(id)}
+          onClick={() => addProductCart(url)}
           className="header-game__buy-btn"
         >
           Comprar

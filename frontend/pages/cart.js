@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { getGameByUrlApi } from '../api/game';
 import AddressShipping from '../components/Cart/AddressShipping/AddressShipping';
 import BasicLayout from '../layouts/BasicLayout';
+import Payment from '../components/Cart/Payment/Payment';
 import SummaryCart from '../components/Cart/SummaryCart/SummaryCart';
 import useCart from '../hooks/useCart';
 
@@ -38,6 +39,7 @@ function FullCart({ products }) {
         setReloadCard={setReloadCard}
       />
       <AddressShipping setAddress={setAddress} />
+      {address && <Payment products={productsData} address={address} />}
     </BasicLayout>
   );
 }

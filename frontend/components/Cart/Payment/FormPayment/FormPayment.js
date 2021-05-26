@@ -5,9 +5,16 @@ import { Button } from 'semantic-ui-react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { toast } from 'react-toastify';
 
+import { paymentCartApi } from '../../../../api/cart';
+import useAuth from '../../../../hooks/useAuth';
+import useCart from '../../../../hooks/useCart';
+
 export default function FormPayment({ products, address }) {
   const stripe = useStripe();
   const elements = useElements();
+  const router = useRouter();
+  const { auth, logout } = useAuth();
+  const { removeAllProductsCart } = useCart();
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -23,7 +30,23 @@ export default function FormPayment({ products, address }) {
       return toast.error(error.message);
     }
 
-    console.log(token);
+    const resp = await paymentCartApi(
+      token,
+      products,
+      auth.idUser,
+      address,
+      logout
+    );
+
+    if (resp.length > 0) {
+      removeAllProductsCart();
+      toast.success('Pedido completado exitosamente');
+      router.push('/orders');
+    } else {
+      toast.error(
+        'Ocurrio un error al procesar el pedido, vuelva a intentar por favor'
+      );
+    }
 
     setLoading(false);
   };

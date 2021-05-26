@@ -10,6 +10,7 @@ import {
   addProductCart,
   countProductsCart,
   removeProductCart,
+  removeAllProductsCart,
 } from '../api/cart';
 import AuthContext from '../context/AuthContext';
 import CartContext from '../context/CartContext';
@@ -100,7 +101,7 @@ export default function MyApp({ Component, pageProps }) {
       addProductCart: addProduct,
       getProductsCart,
       removeProductCart: removeProduct,
-      removeAllProductsCart: () => null,
+      removeAllProductsCart,
     }),
     [totalProductsCart]
   );

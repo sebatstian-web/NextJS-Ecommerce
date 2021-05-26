@@ -1,6 +1,7 @@
 import { toast } from 'react-toastify';
 
 import { CART } from '../utils/constants';
+import { authFetch } from '../utils/fetch';
 
 export const getProductsCart = () => {
   const cart = localStorage.getItem(CART);
@@ -51,4 +52,41 @@ export const removeProductCart = (product) => {
     const productsFilter = cart.filter((item) => item !== product);
     localStorage.setItem(CART, productsFilter);
   }
+};
+
+export const paymentCartApi = async (
+  token,
+  products,
+  idUser,
+  address,
+  logout
+) => {
+  try {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/orders`;
+
+    delete address.user;
+
+    const params = {
+      method: 'POST',
+      body: JSON.stringify({
+        token,
+        products,
+        idUser,
+        address,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+
+    const resp = authFetch(url, params, logout);
+    return resp;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
+export const removeAllProductsCart = () => {
+  localStorage.removeItem(CART);
 };

@@ -1,3 +1,5 @@
+/**/.env
+
 # Frontend
 /**/node_modules
 /**/.next/
@@ -9,3 +11,4 @@
 /**/exports
 /**/build
 /**/.cache
+backend/.strapi-updater.json

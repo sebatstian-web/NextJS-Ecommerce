@@ -5,6 +5,7 @@ import { Loader } from 'semantic-ui-react';
 import { getLastGamesApi } from '../api/game';
 import BasicLayout from '../layouts/BasicLayout';
 import ListGames from '../components/ListGames';
+import Seo from '../components/Seo';
 
 export default function Home() {
   const [games, setGames] = useState(null);
@@ -19,6 +20,11 @@ export default function Home() {
 
   return (
     <BasicLayout className="home">
+      <Seo
+        title="Tienda de Video Juegos"
+        description="Los mejores juegos para Nintendo, PlayStation y Xbox."
+      />
+
       {!games && <Loader active>Cargando juegos...</Loader>}
       {games && games.length === 0 && (
         <div>

@@ -6,6 +6,7 @@ import { Loader } from 'semantic-ui-react';
 import { searchGamesApi } from '../api/game';
 import BasicLayout from '../layouts/BasicLayout';
 import ListGames from '../components/ListGames';
+import Seo from '../components/Seo';
 
 export default function Search() {
   const { query } = useRouter();
@@ -31,6 +32,11 @@ export default function Search() {
 
   return (
     <BasicLayout className="search">
+      <Seo
+        title={`Buscado: ${query.query}`}
+        description="Buscador de juegos."
+      />
+
       {!games && <Loader active>Buscando juegos...</Loader>}
       {games && games.length === 0 && (
         <div>

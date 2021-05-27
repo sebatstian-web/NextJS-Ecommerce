@@ -18,8 +18,6 @@ export default function Orders() {
     })();
   }, []);
 
-  console.log(orders);
-
   return (
     <BasicLayout className="orders">
       <div className="orders__block">
